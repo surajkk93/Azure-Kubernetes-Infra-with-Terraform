@@ -1,14 +1,3 @@
-# Output for Virtual Machine (currently commented out)
-# Uncomment if VM module is re-enabled
-# output "vm_public_ip" {
-#   value = module.virtual_machine.public_ip
-# }
-
-# output "vm_admin_username" {
-#   value       = module.vm.admin_username
-#   description = "Admin username of the VM"
-# }
-
 # Output: AKS cluster API server endpoint
 output "aks_cluster_host" {
   value     = module.aks.host

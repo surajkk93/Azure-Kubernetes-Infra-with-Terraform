@@ -19,14 +19,6 @@ module "nsg" {
   location = var.location
   rg_name  = module.resource_group.rg_name
 }
-# module "vm" {
-#   source          = "./modules/virtual_machine"
-#   vm_name         = "portfolio-vm"
-#   location        = var.location
-#   rg_name         = module.resource_group.rg_name
-#   subnet_id       = module.network.subnet_id
-#   ssh_public_key  = var.ssh_public_key
-# }
 module "aks" {
   source     = "./modules/aks"
   aks_name   = "suraj-aks"

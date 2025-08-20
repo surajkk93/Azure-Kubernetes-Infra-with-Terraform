@@ -16,65 +16,63 @@ azure-terraform-infra-modules/
 ├── variables.tf             # Root input variables
 ├── terraform.tfvars         # Variable values
 ├── outputs.tf               # Output values (IP, host, etc.)
-├── backend.tf               # Remote backend configuration (points to Azure Blob Storage)
 ├── modules/
 │   ├── resource_group/      # Creates Azure Resource Group
 │   ├── network/             # Creates VNet & Subnets
 │   ├── nsg/                 # Network Security Group rules
 │   ├── aks/                 # Azure Kubernetes Service (AKS) cluster
 │   └── k8s_deploy/          # Deploys Docker image to AKS
-└── bootstrap/               # Bootstraps remote backend (Storage account + Container)
-    ├── main.tf              # Creates storage account, container for state files
-    ├── variables.tf
-    ├── terraform.tfvars
-    └── outputs.tf
 ```
 
 ---
 
 ## 🧱 What It Does
 
-- **Bootstrap Phase (one-time setup):**
-  - Creates Azure Resource Group, Storage Account, and Blob Container for Terraform state.
-  - Stores the `terraform.tfstate` file in Azure Blob Storage.
-
-- **Root Infrastructure Phase:**
-  - Configures the backend (`backend.tf`) to point to the remote state in Blob Storage.
-  - Creates Virtual Network, Subnets, and AKS Cluster using `azurerm_kubernetes_cluster`.
-  - Configures Kubernetes provider to interact with AKS.
-  - Deploys a public Docker image (`surajkk93/year_progress`) to Kubernetes.
-  - Exposes it using a LoadBalancer Service.
+- Creates Azure Resource Group and Network
+- Provisions AKS Cluster using `azurerm_kubernetes_cluster`
+- Configures Terraform Kubernetes Provider
+- Deploys a public Docker image (`surajkk93/year_progress`)
+- Exposes it using a LoadBalancer Kubernetes Service
+- Fully modular and reusable
 
 ---
 
 ## 🛠️ How to Use
 
-### 1️⃣ Bootstrap the Backend
-
-Navigate to the `bootstrap/` folder and apply Terraform:
+### 1️⃣ Clone the Repo
 
 ```bash
-cd bootstrap
-terraform init
-terraform apply
+git clone https://github.com/surajkk93/azure-terraform-infra-modules.git
+cd azure-terraform-infra-modules
 ```
 
-This will create the Storage Account and Container where Terraform state will be saved.
+### 2️⃣ Set Your Terraform Variables
 
----
+Update `terraform.tfvars`:
 
-### 2️⃣ Deploy the Infrastructure
+```hcl
+location = "East US"
+subscription_id = "your-subscription-id"
+```
 
-Go to the root folder and apply Terraform:
+Make sure to export your Azure credentials or be logged in:
 
 ```bash
-cd ..
+az login
+```
+
+### 3️⃣ Initialize Terraform
+
+```bash
 terraform init
+```
+
+### 4️⃣ Plan & Apply
+
+```bash
 terraform plan
 terraform apply
 ```
-
-Terraform will now use the remote backend automatically.
 
 ---
 
@@ -150,7 +148,6 @@ The AKS credentials are output as sensitive and used internally to connect via t
 
 ## 🧠 What You Learned
 
-- Bootstrapping remote backend in Azure
 - Writing modular Terraform code
 - Using Azure Resource Manager
 - Configuring the Kubernetes provider
